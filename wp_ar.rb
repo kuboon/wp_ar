@@ -1,4 +1,5 @@
-require 'activerecord'
+gem 'activerecord', '~> 3.0'
+require 'active_record'
 
 # Adapted from http://snippets.dzone.com/posts/show/1314 and
 # considerably extended
@@ -53,7 +54,7 @@ class WpBlogPost < ActiveRecord::Wordpress
 
   belongs_to :author, :class_name => 'WpUser', :foreign_key => 'post_author'
 
-  named_scope :published, :conditions => {:post_status => 'publish'}
+  scope :published, :conditions => {:post_status => 'publish'}
   default_scope :order => 'post_date DESC'
 
   validates_presence_of :post_modified, :post_modified_gmt, :post_date, :post_date_gmt
@@ -113,7 +114,7 @@ class WpUser < ActiveRecord::Wordpress
   has_many :meta_details, :class_name => 'WpUserMeta', :foreign_key => 'user_id'
   has_many :blog_posts, :class_name => 'WpBlogPost', :foreign_key => 'post_author'
     
-  before_validation_on_create :store_registration_time
+  before_validation :store_registration_time, :on => :create
   
   validates_presence_of :user_registered
   validates_uniqueness_of :user_email, :user_login
