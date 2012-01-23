@@ -6,12 +6,6 @@ require 'active_record'
 
 class ActiveRecord::Wordpress < ActiveRecord::Base
   self.abstract_class = true
-  establish_connection(
-    :adapter => "mysql",
-    :host => "localhost",
-    :username => "",
-    :database => ""
-  )
 end
 
 class WpBlogComment < ActiveRecord::Wordpress
