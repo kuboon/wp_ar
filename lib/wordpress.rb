@@ -38,6 +38,7 @@ module Wordpress
     has_many :term_relationships, :foreign_key => 'object_id'
     has_many :term_taxonomies, :through => :term_relationships
     has_many :taggings, through: :term_relationships, :source => :term_taxonomy#, :conditions => ['#{table_name_prefix}term_taxonomy.taxonomy = ?', 'post_tag']
+    has_many :terms, through: :taggings
 
     belongs_to :author, :class_name => 'User', :foreign_key => 'post_author'
 
@@ -59,14 +60,14 @@ module Wordpress
     end
 
     def tags
-      taggings.pluck(:term)
+      terms.pluck(:name)
     end
   end
 
   class Term < Base
     self.primary_key = 'term_id'
-    has_many :taxonomies, :class_name => 'TermTaxonomy'
-    has_many :relationships, :through => :taxonomies
+    has_many :term_taxonomies
+    has_many :relationships, :through => :term_taxonomies
 
     def posts
       relationships.includes(:post).map(&:post)
